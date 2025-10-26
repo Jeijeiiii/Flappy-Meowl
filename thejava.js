@@ -11,10 +11,10 @@ let velocity = 0;
 const gravity = 0.25;
 const jumpPower = -4.25;
 const initialY = 20;
-const groundY = window.innerHeight - initialY;
+const groundY = document.documentElement.clientHeight - initialY;
 
 window.addEventListener("resize", () => {
-  groundY = window.innerHeight - initialY;
+  groundY = document.documentElement.clientHeight - initialY;
 });
 
 function update() {
@@ -68,12 +68,12 @@ function createPipe() {
 
   const spawnPosition = window.innerWidth + 100;
   
-  const minHeight = Math.round(window.innerHeight * 0.1); 
-  const maxHeight = Math.round(window.innerHeight * 0.6); 
+  const minHeight = Math.round(document.documentElement.clientHeight * 0.1); 
+  const maxHeight = Math.round(document.documentElement.clientHeight * 0.6); 
   const randomHeight = Math.floor(Math.random() * (maxHeight - minHeight)) + minHeight;
   
   pipeTop.style.height = randomHeight + 'px';
-  pipeBottom.style.height = (window.innerHeight - randomHeight - pipeGap) + 'px';
+  pipeBottom.style.height = (document.documentElement.clientHeight - randomHeight - pipeGap) + 'px';
   
   pipeTop.style.left = spawnPosition + 'px';
   pipeBottom.style.left = spawnPosition + 'px';
