@@ -56,20 +56,27 @@ cursor: none;
 
 .pipe {
   position: absolute;
-  width: 150px; 
+  width: 220px;
   image-rendering: pixelated;
 }
 
+
 .pipe.up {
   bottom: -400px;
-  width: 550px;
   transform: translateY(125px);
-  background: url("Images/treeuplong.png") no-repeat center / contain;
+  background-image: url("Images/treeuplong.png");
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: 100% auto;
 }
 
 .pipe.down {
   top: -150px;
-  width: 550px;
   transform: translateY(-125px);
-  background: url("Images/treedownlong.png") no-repeat center / contain;
+  background-image: url("Images/treedownlong.png");
+  background-repeat: repeat-y;
+  background-position: center bottom;
+  background-size: 100% auto;
 }
+
+
