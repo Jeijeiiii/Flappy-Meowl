@@ -1,6 +1,6 @@
 const bgm = new Audio('Images/imanewsoul.mp3');
 bgm.loop = true;
-bgm.volume = 0.2;
+bgm.volume = 0.5;
 bgm,currentime = 9; 
 bgm.play();
 
@@ -8,9 +8,9 @@ const meowl = document.querySelector('.meowl');
 
 let meowlY = 200;
 let velocity = 0;
-const gravity = 0.25;
-const jumpPower = -4.25;
-const initialY = 20;
+const gravity = 0.85;
+const jumpPower = -11;
+const initialY = 140;
 const groundY = document.documentElement.clientHeight - initialY;
 
 window.addEventListener("resize", () => {
@@ -26,7 +26,7 @@ function update() {
     velocity = 0;
   }
 
-  let rotation = velocity * 3; 
+  let rotation = velocity * 2.4; 
   if (rotation > 45) rotation = 45;   
   if (rotation < -25) rotation = -25; 
 
@@ -52,13 +52,17 @@ window.addEventListener('touchstart', () => {
 
 update();
 
+
+
+
+
 const game = document.querySelector('.game');
 const pipesContainer = document.querySelector('.pipes');
 
 let pipes = [];
-const pipeGap = 30;
-const pipeSpeed = 2.0;
-const spawnInterval = 1000;
+const pipeGap = 100;
+const pipeSpeed = 7;
+const spawnInterval = 1100;
 
 function createPipe() {
   const pipeTop = document.createElement('div');
@@ -66,15 +70,15 @@ function createPipe() {
   pipeTop.classList.add('pipe', 'down');
   pipeBottom.classList.add('pipe', 'up');
 
-  const spawnPosition = window.innerWidth + 100;
+  const spawnPosition = document.documentElement.clientWidth + 500;
   
   const minHeight = Math.round(document.documentElement.clientHeight * 0.1); 
   const maxHeight = Math.round(document.documentElement.clientHeight * 0.6); 
   const randomHeight = Math.floor(Math.random() * (maxHeight - minHeight)) + minHeight;
   
-  pipeTop.style.height = randomHeight + 'px';
-  pipeBottom.style.height = (document.documentElement.clientHeight - randomHeight - pipeGap) + 'px';
-  
+  pipeTop.style.bottom = randomHeight + 'px';
+  pipeBottom.style.top = (document.documentElement.clientHeight - randomHeight - pipeGap) + 'px';
+
   pipeTop.style.left = spawnPosition + 'px';
   pipeBottom.style.left = spawnPosition + 'px';
 
@@ -91,7 +95,7 @@ function updatePipes() {
     pipe.top.style.left = newLeft + 'px';
     pipe.bottom.style.left = newLeft + 'px';
 
-    if (newLeft < -100) {
+    if (newLeft < -600) {
       pipe.top.remove();
       pipe.bottom.remove();
       pipes.splice(i, 1);
