@@ -1,8 +1,15 @@
 const bgm = new Audio('Images/imanewsoul.mp3');
+const jumpSound = new Audio('Images/jump.wav');
+const scoreSound = new Audio('Images/score.wav');
+const hitSound = new Audio('Images/hit.wav');
+const gameoversound = new Audio('Images/rip.mp3');
 bgm.loop = true;
 bgm.volume = 0.5;
-bgm,currentime = 9; 
+bgm.currentime = 9; 
 bgm.play();
+
+jumpSound.volume = 0.4;
+hitSound.volume = 0.4;
 
 const meowl = document.querySelector('.meowl');
 
@@ -10,7 +17,7 @@ let meowlY = 200;
 let velocity = 0;
 const gravity = 0.85;
 const jumpPower = -11;
-const initialY = 140;
+const initialY = -300;
 const groundY = document.documentElement.clientHeight - initialY;
 
 window.addEventListener("resize", () => {
@@ -33,11 +40,13 @@ function update() {
   meowl.style.top = meowlY + 'px';
   meowl.style.transform = `rotate(${rotation}deg)`; 
 
+  requestAnimationFrame(collisionDetection);
   requestAnimationFrame(update);
 }
 
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space') {
+    jumpSound.play();
     velocity = jumpPower;
   }
 });
@@ -105,6 +114,69 @@ function updatePipes() {
   requestAnimationFrame(updatePipes);
 }
 
-setInterval(createPipe, spawnInterval);
+
+let pipeSpawnInterval = setInterval(createPipe, spawnInterval);
 updatePipes();
 
+
+let gameOver = false;
+function collisionDetection() {
+
+  if (gameOver) return;
+  const meowlRect = meowl.getBoundingClientRect();
+  const hitboxOffset = 75;
+
+  pipes.forEach((pipe) => {
+    const pipeTopRect = (pipe.top.getBoundingClientRect());
+    const pipeBottomRect = (pipe.bottom.getBoundingClientRect());
+
+  const pipeTopBox = {
+    top: pipeTopRect.top + hitboxOffset,
+    bottom: pipeTopRect.bottom - hitboxOffset,
+    left: pipeTopRect.left + hitboxOffset,
+    right: pipeTopRect.right - hitboxOffset
+  };
+  const pipeBottomBox = {
+    top: pipeBottomRect.top + hitboxOffset + 10,
+    bottom: pipeBottomRect.bottom - hitboxOffset,
+    left: pipeBottomRect.left + hitboxOffset,
+    right: pipeBottomRect.right - hitboxOffset
+  };
+
+    if (meowlRect.right > pipeTopBox.left &&
+        meowlRect.left < pipeTopBox.right &&
+        meowlRect.top < pipeTopBox.bottom &&
+        meowlRect.bottom > pipeTopBox.top ||
+        meowlRect.right > pipeBottomBox.left &&
+        meowlRect.left < pipeBottomBox.right &&
+        meowlRect.top < pipeBottomBox.bottom &&
+        meowlRect.bottom > pipeBottomBox.top) {
+      // Collision detected
+      triggerGameOver();
+    }  
+  });
+}
+
+function triggerGameOver() {
+  if (gameOver) return;
+  gameOver = true;
+
+  hitSound.play();
+  bgm.pause();
+
+  setTimeout(() => {
+    gameoversound.play();
+  }, 500);
+
+  clearInterval(pipeSpawnInterval);
+  const background = document.querySelector('.background');
+  velocity = 0;
+  pipes = [];
+  background.style.animationPlayState = 'paused';  
+  updatePipes = () => {};
+
+  const restartButton = document.getElementById('restartbutton');
+  restartButton.addEventListener('click', () => {
+    window.location.reload();
+  });
+}
