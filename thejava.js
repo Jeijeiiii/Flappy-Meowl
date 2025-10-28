@@ -1,3 +1,6 @@
+let gameStarted = false;
+let gameOver = false;
+
 const bgm = new Audio('Images/imanewsoul.mp3');
 const jumpSound = new Audio('Images/jump.wav');
 const scoreSound = new Audio('Images/score.wav');
@@ -10,6 +13,14 @@ bgm.play();
 
 jumpSound.volume = 0.4;
 hitSound.volume = 0.4;
+
+window.addEventListener('keydown', handleKeydown);
+window.addEventListener('mousedown', handleMousedown);
+window.addEventListener('touchstart', handleTouchstart);
+
+let score = 0;
+const scoreDisplay = document.getElementById('score');
+
 
 const meowl = document.querySelector('.meowl');
 
@@ -25,6 +36,8 @@ window.addEventListener("resize", () => {
 });
 
 function update() {
+  if (!gameStarted) return;
+
   velocity += gravity;
   meowlY += velocity;
 
@@ -44,25 +57,45 @@ function update() {
   requestAnimationFrame(update);
 }
 
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space') {
+function handleKeydown(e) {
+  if (e.code !== 'Space') return;
+  e.preventDefault();
+  if (gameOver) return;
+  if (!gameStarted) {
+      startGame();
+  }
     jumpSound.play();
     velocity = jumpPower;
   }
-});
 
-window.addEventListener('mousedown', () => {
-  velocity = jumpPower;
-});
 
-window.addEventListener('touchstart', () => {
-  velocity = jumpPower;
-});
+function startGame() {
+  gameStarted = true;
+  bgm.play();
+  bgm.currentTime = 5;
+
+  pipeSpawnInterval = setInterval(createPipe, spawnInterval);
+  update();
+  updatePipes();
+
+}
+
+function handleMousedown() {
+  if (gameOver) return;
+
+  if (!gameStarted) startGame();
+    velocity = jumpPower;
+    jumpSound.play();
+  }
+
+function handleTouchstart(e) {
+  if (gameOver) return;
+  if (!gameStarted) startGame();
+    velocity = jumpPower;
+    jumpSound.play();
+  }
 
 update();
-
-
-
 
 
 const game = document.querySelector('.game');
@@ -104,6 +137,13 @@ function updatePipes() {
     pipe.top.style.left = newLeft + 'px';
     pipe.bottom.style.left = newLeft + 'px';
 
+    if (!pipe.passed && newLeft + pipe.top.offsetWidth - 140 < meowl.offsetLeft) {
+      pipe.passed = true;
+      score+= 10;
+      scoreDisplay.textContent = score;
+      scoreSound.play();
+    }
+
     if (newLeft < -600) {
       pipe.top.remove();
       pipe.bottom.remove();
@@ -115,11 +155,7 @@ function updatePipes() {
 }
 
 
-let pipeSpawnInterval = setInterval(createPipe, spawnInterval);
-updatePipes();
-
-
-let gameOver = false;
+let pipeSpawnInterval = null;
 function collisionDetection() {
 
   if (gameOver) return;
@@ -151,7 +187,7 @@ function collisionDetection() {
         meowlRect.left < pipeBottomBox.right &&
         meowlRect.top < pipeBottomBox.bottom &&
         meowlRect.bottom > pipeBottomBox.top) {
-      // Collision detected
+
       triggerGameOver();
     }  
   });
@@ -174,6 +210,10 @@ function triggerGameOver() {
   pipes = [];
   background.style.animationPlayState = 'paused';  
   updatePipes = () => {};
+
+  window.removeEventListener('keydown', handleKeydown);
+  window.removeEventListener('mousedown', handleMousedown);
+  window.removeEventListener('touchstart', handleTouchstart);
 
   const restartButton = document.getElementById('restartbutton');
   restartButton.addEventListener('click', () => {
