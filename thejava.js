@@ -5,14 +5,17 @@ const bgm = new Audio('Images/imanewsoul.mp3');
 const jumpSound = new Audio('Images/jump.wav');
 const scoreSound = new Audio('Images/score.wav');
 const hitSound = new Audio('Images/hit.wav');
+const hundredpoints = new Audio('Images/omg.wav');
+const thousandpoints = new Audio('Images/omgomg.wav');
 const gameoversound = new Audio('Images/rip.mp3');
 bgm.loop = true;
-bgm.volume = 0.5;
+bgm.volume = 0.45;
 bgm.currentime = 9; 
-bgm.play();
 
 jumpSound.volume = 0.4;
 hitSound.volume = 0.4;
+hundredpoints.volume = 0.4;
+thousandpoints.volume = 0.6;
 
 window.addEventListener('keydown', handleKeydown);
 window.addEventListener('mousedown', handleMousedown);
@@ -142,6 +145,13 @@ function updatePipes() {
       score+= 10;
       scoreDisplay.textContent = score;
       scoreSound.play();
+
+      if (score % 100 === 0 && score !== 0) {
+        hundredpoints.play();
+      }
+      if (score % 1000 === 0 && score !== 0){
+        thousandpoints.play()
+      }
     }
 
     if (newLeft < -600) {
