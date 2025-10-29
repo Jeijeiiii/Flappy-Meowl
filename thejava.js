@@ -9,7 +9,7 @@ const hundredpoints = new Audio('Images/omg.wav');
 const thousandpoints = new Audio('Images/omgomg.wav');
 const gameoversound = new Audio('Images/rip.mp3');
 bgm.loop = true;
-bgm.volume = 0.45;
+bgm.volume = 0.7;
 bgm.currentime = 9; 
 
 jumpSound.volume = 0.4;
@@ -49,6 +49,12 @@ function update() {
     velocity = 0;
   }
 
+  if (meowlY < -50) {
+  meowlY = -50;
+  velocity = 0; // stops going higher
+  }
+
+
   let rotation = velocity * 2.4; 
   if (rotation > 45) rotation = 45;   
   if (rotation < -25) rotation = -25; 
@@ -58,6 +64,7 @@ function update() {
 
   requestAnimationFrame(collisionDetection);
   requestAnimationFrame(update);
+
 }
 
 function handleKeydown(e) {
@@ -75,6 +82,13 @@ function handleKeydown(e) {
 function startGame() {
   gameStarted = true;
   bgm.play();
+  
+
+  
+  document.addEventListener("click", () => {
+  if (bgm.paused) {
+    bgm.play();
+  }});
   bgm.currentTime = 5;
 
   pipeSpawnInterval = setInterval(createPipe, spawnInterval);
@@ -186,7 +200,7 @@ function collisionDetection() {
     top: pipeBottomRect.top + hitboxOffset + 10,
     bottom: pipeBottomRect.bottom - hitboxOffset,
     left: pipeBottomRect.left + hitboxOffset,
-    right: pipeBottomRect.right - hitboxOffset
+    right: pipeBottomRect.right - hitboxOffset + 5
   };
 
     if (meowlRect.right > pipeTopBox.left &&
@@ -225,7 +239,15 @@ function triggerGameOver() {
   window.removeEventListener('mousedown', handleMousedown);
   window.removeEventListener('touchstart', handleTouchstart);
 
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space'){
+      window.location.reload();
+    }
+  });
+
+
   const restartButton = document.getElementById('restartbutton');
+  restartButton.style.opacity = "1";
   restartButton.addEventListener('click', () => {
     window.location.reload();
   });

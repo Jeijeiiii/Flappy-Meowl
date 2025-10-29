@@ -97,10 +97,12 @@ cursor: none;
   font-size: 48px;
   margin-bottom: 20px;
 }
+
 .restartbutton {
   padding: 10px 20px;
   font-size: 24px;
   cursor: pointer;
+  opacity: 0;
 }
 
 #score {
