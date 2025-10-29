@@ -8,6 +8,7 @@ const hitSound = new Audio('Images/hit.wav');
 const hundredpoints = new Audio('Images/omg.wav');
 const thousandpoints = new Audio('Images/omgomg.wav');
 const gameoversound = new Audio('Images/rip.mp3');
+const restartButton = document.getElementById('restartbutton');
 bgm.loop = true;
 bgm.volume = 0.7;
 bgm.currentime = 9; 
@@ -197,10 +198,10 @@ function collisionDetection() {
     right: pipeTopRect.right - hitboxOffset
   };
   const pipeBottomBox = {
-    top: pipeBottomRect.top + hitboxOffset + 10,
+    top: pipeBottomRect.top + hitboxOffset + 20,
     bottom: pipeBottomRect.bottom - hitboxOffset,
     left: pipeBottomRect.left + hitboxOffset,
-    right: pipeBottomRect.right - hitboxOffset + 5
+    right: pipeBottomRect.right - hitboxOffset - 30
   };
 
     if (meowlRect.right > pipeTopBox.left &&
@@ -241,12 +242,12 @@ function triggerGameOver() {
 
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space'){
-      window.location.reload();
+      setTimeout ( () => {
+        window.location.reload();
+      }, 1200);
     }
   });
 
-
-  const restartButton = document.getElementById('restartbutton');
   restartButton.style.opacity = "1";
   restartButton.addEventListener('click', () => {
     window.location.reload();
